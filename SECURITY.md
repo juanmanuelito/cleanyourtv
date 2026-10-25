@@ -13,6 +13,12 @@ Only the maintainer sees the report. If that doesn't work for you, email
 Please include what is affected (the prompt, a tool in `tools/`, the launcher, a debloat list),
 the steps to reproduce it, and what an attacker could do with it.
 
+## Verifying a release
+
+A built release APK is verified against its checksum: `tools/make-release.sh` builds the APK and
+writes `sha256sums.txt` beside it, so `sha256sum -c` confirms a download is the artifact that came
+out of this repository.
+
 ## What counts
 
 - The launcher (`com.gathin.tvhome`) doing something it shouldn't: reaching the network, exposing
