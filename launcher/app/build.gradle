@@ -2,9 +2,30 @@ plugins {
     id 'com.android.application'
 }
 
+// Fork-only release signing: load an optional keystore.properties so the release APK is signed with
+// this fork's own key instead of the public Android debug key. The file is gitignored; without it the
+// build falls back to debug signing, so the repo still builds anywhere (upstream, CI without a key).
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+def hasReleaseKeystore = keystorePropertiesFile.exists()
+if (hasReleaseKeystore) {
+    keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
+}
+
 android {
     namespace 'com.gathin.tvhome'
     compileSdk 34
+
+    signingConfigs {
+        if (hasReleaseKeystore) {
+            release {
+                storeFile rootProject.file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
+        }
+    }
 
     defaultConfig {
         // Opt-in identity for firmware with a package-name HOME allowlist; see docs/devices/xiaomi-mitv-aetp0-dofus.md.
@@ -22,7 +43,7 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             // Sideloaded over ADB, never published: sign with the debug key so it installs over a debug build.
-            signingConfig signingConfigs.debug
+            signingConfig hasReleaseKeystore ? signingConfigs.release : signingConfigs.debug
         }
     }
 
