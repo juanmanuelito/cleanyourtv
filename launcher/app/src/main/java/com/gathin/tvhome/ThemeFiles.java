@@ -40,12 +40,9 @@ final class ThemeFiles {
         return null;
     }
 
-    /** True for "wallpapers" or "themes/<name>/wallpapers" alone: a delete of it clears that collection's images. */
+    /** True for "wallpapers" alone: a delete of it clears the collection's images. */
     static boolean isCollection(List<String> segments) {
-        if (segments == null) return false;
-        if (segments.size() == 1) return WALLPAPERS.equals(segments.get(0));
-        return segments.size() == 3 && "themes".equals(segments.get(0))
-                && THEME_NAME.matcher(segments.get(1)).matches() && WALLPAPERS.equals(segments.get(2));
+        return segments != null && segments.size() == 1 && WALLPAPERS.equals(segments.get(0));
     }
 
     static boolean collectionImage(String name) {

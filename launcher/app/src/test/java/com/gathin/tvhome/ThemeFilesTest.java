@@ -70,8 +70,13 @@ public class ThemeFilesTest {
         assertNull(ThemeFiles.path(List.of("themes", "..", "config.json")));
         assertNull(ThemeFiles.path(List.of("themes", "a/b", "config.json")));
         assertNull(ThemeFiles.path(List.of("themes", "midnight", "evil.exe")));
+        assertNull(ThemeFiles.path(List.of("themes", "midnight", "..", "config.json")));
+        assertNull(ThemeFiles.path(List.of("themes", "midnight", "wallpapers", "..", "config.json")));
+        assertNull(ThemeFiles.path(List.of("themes", "a\\b", "config.json")));
+        assertNull(ThemeFiles.path(List.of("themes", "", "config.json")));
     }
-    @Test public void catalogIsCollection() {
-        assertTrue(ThemeFiles.isCollection(List.of("themes", "midnight", "wallpapers")));
+    @Test public void catalogIsNotACollection() {
+        assertFalse(ThemeFiles.isCollection(List.of("themes", "midnight", "wallpapers")));
+        assertTrue(ThemeFiles.isCollection(List.of("wallpapers")));
     }
 }
