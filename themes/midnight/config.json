@@ -1,0 +1,14 @@
+{
+  "background_color": "#05070F",
+  "wallpaper": true,
+  "wallpaper_rotation_minutes": 30,
+  "wallpaper_dim": 30,
+  "dock_glass": true,
+  "dock_opacity": 70,
+  "ambient_glow": false,
+  "wallpaper_moods": {
+    "morning": ["dawn.jpg"],
+    "evening": ["dusk.jpg"],
+    "night": ["night.jpg"]
+  }
+}
