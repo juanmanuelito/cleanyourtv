@@ -45,16 +45,18 @@ final class ThemeCatalog {
         if (!destWallpapers.exists() && !destWallpapers.mkdirs()) return false;
         File[] old = destWallpapers.listFiles();
         if (old != null) for (File f : old) f.delete();
+        boolean ok = true;
         File single = new File(theme, Config.WALLPAPER_NAME);
         File destSingle = new File(dir, Config.WALLPAPER_NAME);
         destSingle.delete();
-        if (single.isFile()) copy(single, destSingle);
+        if (single.isFile()) ok &= copy(single, destSingle);
         File srcWallpapers = new File(theme, "wallpapers");
         if (srcWallpapers.isDirectory()) {
             File[] imgs = srcWallpapers.listFiles();
-            if (imgs != null) for (File f : imgs) if (f.isFile()) copy(f, new File(destWallpapers, f.getName()));
+            if (imgs != null) for (File f : imgs) if (f.isFile()) ok &= copy(f, new File(destWallpapers, f.getName()));
         }
-        copy(new File(theme, Config.FILE_NAME), new File(dir, Config.FILE_NAME));
+        ok &= copy(new File(theme, Config.FILE_NAME), new File(dir, Config.FILE_NAME));
+        if (!ok) return false;
         try (java.io.FileWriter w = new java.io.FileWriter(new File(dir, "theme_revision"))) {
             w.write(UUID.randomUUID().toString());
         } catch (java.io.IOException e) { return false; }
@@ -75,11 +77,12 @@ final class ThemeCatalog {
         return true;
     }
 
-    private static void copy(File from, File to) {
+    private static boolean copy(File from, File to) {
         try (java.io.InputStream in = new java.io.FileInputStream(from);
              java.io.OutputStream out = new java.io.FileOutputStream(to)) {
             byte[] buf = new byte[8192]; int n;
             while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
-        } catch (java.io.IOException ignored) { }
+            return true;
+        } catch (java.io.IOException e) { return false; }
     }
 }
