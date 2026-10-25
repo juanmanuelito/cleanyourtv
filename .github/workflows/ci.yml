@@ -68,3 +68,24 @@ jobs:
           size=$(stat -c %s launcher/app/build/outputs/apk/release/app-release.apk)
           echo "release APK: $((size / 1024)) KB"
           test "$size" -lt 589824 || { echo "APK is over 576 KB; the launcher targets 1 GB TVs, keep it small"; exit 1; }
+
+  security-scan:
+    # Fork-only: vulnerability scanning for the tools' Python deps and the repo.
+    name: Dependency vulnerability scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: pip-audit on tools/requirements.txt
+        run: |
+          python -m pip install --upgrade pip-audit==2.10.1
+          pip-audit -r tools/requirements.txt
+      - name: osv-scanner on the repository
+        run: |
+          curl -sSfL https://github.com/google/osv-scanner/releases/download/v2.7.0/osv-scanner_linux_amd64 -o osv-scanner
+          chmod +x osv-scanner
+          ./osv-scanner scan -r . -L tools/requirements.txt
