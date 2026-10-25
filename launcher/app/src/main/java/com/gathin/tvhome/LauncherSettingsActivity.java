@@ -28,6 +28,7 @@ public final class LauncherSettingsActivity extends Activity {
     private static final int[] DOCK_OPACITIES = {100, 70, 50, 30};
     private final TextView[] dockChoices = new TextView[DOCK_OPACITIES.length];
     private TextView wallpaperChoice;
+    private TextView themeChoice;
     private TextView animationsChoice;
     private TextView advancedChoice;
     private TextView followThemeChoice;
@@ -101,6 +102,11 @@ public final class LauncherSettingsActivity extends Activity {
         }
         wallpaperChoice = findViewById(R.id.wallpaperChoice);
         wallpaperChoice.setOnClickListener(v -> showWallpaperPicker());
+        themeChoice = findViewById(R.id.themeChoice);
+        if (!ThemeCatalog.list(Config.dir(this)).isEmpty()) {
+            themeChoice.setVisibility(View.VISIBLE);
+            themeChoice.setOnClickListener(v -> showThemePicker());
+        }
         animationsChoice = findViewById(R.id.animationsChoice);
         animationsChoice.setOnClickListener(v -> {
             animations = !animations;
@@ -194,6 +200,34 @@ public final class LauncherSettingsActivity extends Activity {
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
+    }
+
+    /** Built-in (clear the overlay), then every pushed catalog theme by name. */
+    private void showThemePicker() {
+        File dir = Config.dir(this);
+        List<ThemeCatalog.Entry> entries = new ArrayList<>(ThemeCatalog.list(dir));
+        Collections.sort(entries, (a, b) -> a.name.compareToIgnoreCase(b.name));
+        String[] labels = new String[entries.size() + 1];
+        labels[0] = getString(R.string.theme_builtin);
+        for (int i = 0; i < entries.size(); i++) labels[i + 1] = entries.get(i).name;
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.themes)
+                .setSingleChoiceItems(labels, -1, (dialog, which) -> {
+                    dialog.dismiss();
+                    boolean ok = which == 0 ? ThemeCatalog.clear(dir)
+                            : ThemeCatalog.apply(dir, entries.get(which - 1).name);
+                    if (ok) applyThemeDone();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    /** A theme was applied or cleared. Home rebuilds on the next resume because the change count moved. */
+    private void applyThemeDone() {
+        choices.edit().putLong(Config.SETTINGS_REVISION_KEY,
+                choices.getLong(Config.SETTINGS_REVISION_KEY, 0) + 1).apply();
+        Toast.makeText(this, R.string.theme_applied, Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     /** Off, then every app with a TV entry point by name. Saved at once; it is read on the next boot. */
