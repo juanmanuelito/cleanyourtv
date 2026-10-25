@@ -164,13 +164,14 @@
          app each such "global key" was routed to. Check with the real remote: keys injected over ADB never
          reach InputKeyService. Leave empty to omit. -->
     <integer-array name="input_key_keycodes">
+        <item>130</item>
     </integer-array>
     <!-- Answer the system input switcher (com.android.tv.action.VIEW_INPUTS) with the Inputs menu. For TVs whose
          stock launcher was the only handler of that action, so the remote's Input button does nothing once the
          stock launcher is disabled even with InputKeyService on (Hisense huangshan, Android TV 10: no
          global_keys.xml, no vendor input picker). Off by default: a TV with its own input picker would otherwise
          get a chooser on every press. Also "handle_view_inputs": true in a theme's config.json. -->
-    <bool name="handle_view_inputs">false</bool>
+    <bool name="handle_view_inputs">true</bool>
     <!-- Remote buttons that open an app, as "keycode:package" or "KEYCODE_NAME:package" (INPUT_KEY_SERVICE=1 or
          HOME_KEY_SERVICE=1; both read this one list, and a theme's config.json can set it too). On Google TV the
          YouTube button sends 190 (KEYCODE_BUTTON_3) to the stock launcher, so it does nothing once launcherx
