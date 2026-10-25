@@ -216,6 +216,9 @@ enable_service() {   # appends to enabled_accessibility_services without droppin
 if [ "${INPUT_KEY_SERVICE:-0}" = 1 ]; then enable_service InputKeyService; fi
 if [ "${HOME_KEY_SERVICE:-0}" = 1 ]; then enable_service HomeKeyService; fi
 if [ "${RESTORE_KEY_SERVICES:-0}" = 1 ]; then
+  # WRITE_SECURE_SETTINGS is a powerful permission: it lets the app change system settings broadly.
+  # It is granted only here, only on request, so ServiceRepair can put the key helpers back after a
+  # force-stop of the launcher. On a TV you do not fully control, prefer leaving it off.
   "$PY" -I ../tools/tv.py "pm grant com.gathin.tvhome android.permission.WRITE_SECURE_SETTINGS && echo restore-granted"
 fi
 echo "Installed. Press Home on the remote to see it."

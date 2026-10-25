@@ -575,6 +575,17 @@ and `sdkmanager "platforms;android-34" "build-tools;34.0.0"`. On Linux the insta
 </details>
 
 <details>
+<summary><b>Security notes</b></summary>
+
+- **Release signing:** this fork signs the release APK with its own key (`tools/new-keystore.sh`),
+  never the public Android debug key. See [`docs/SECURITY-SIGNING.md`](docs/SECURITY-SIGNING.md).
+- **`RESTORE_KEY_SERVICES=1`** grants the launcher `android.permission.WRITE_SECURE_SETTINGS` so it
+  can put its accessibility key helpers back after a force-stop. It is off by default; pass it only
+  on a TV you own and trust the launcher on, since that permission can change system settings.
+
+</details>
+
+<details>
 <summary><b>Configure</b></summary>
 
 [`config.xml`](launcher/app/src/main/res/values/config.xml) sets the dock order, hidden apps, the Live TV
