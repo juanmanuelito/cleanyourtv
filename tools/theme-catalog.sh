@@ -6,7 +6,7 @@
 #        TV_HOST=192.168.1.50 tools/theme-catalog.sh --clear
 set -euo pipefail
 # Resolve the themes dir against the caller's directory BEFORE cd, as theme.sh does for its folder.
-THEMES_ARG="${1:-}"
+THEMES_ARG="${1:-themes}"
 case "$THEMES_ARG" in
   --clear|"") ;;
   /*) THEMES_ARG="$(cd "$THEMES_ARG" 2>/dev/null && { pwd -W 2>/dev/null || pwd; } || printf '%s' "$THEMES_ARG")" ;;
@@ -31,7 +31,7 @@ if [ "$THEMES_ARG" = --clear ]; then
   tv "rm -rf $DIR/themes 2>/dev/null; $RESTART; echo cleared" | tail -n 1
   exit 0
 fi
-THEMES_DIR="${THEMES_ARG:-themes}"
+THEMES_DIR="$THEMES_ARG"
 [ -d "$THEMES_DIR" ] || { echo "no such themes directory: $THEMES_DIR" >&2; exit 1; }
 tv "mkdir -p $DIR/themes" >/dev/null 2>&1 || true
 for FOLDER in "$THEMES_DIR"/*/; do
