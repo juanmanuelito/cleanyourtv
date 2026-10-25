@@ -12,6 +12,17 @@
 
 ---
 
+## Amendments (recorded during execution)
+
+These reflect reality discovered while executing the plan; they supersede the corresponding steps below.
+
+- **Second requirements file:** the repo also has `tools/requirements-perf.txt` (`perfetto==0.58.2`, `pillow==11.3.0`). The pin test (`tests/test_requirements_pinned.py`) now loops over **both** files, and the CI `security-scan` job audits both.
+- **Vulnerable pins bumped:** the scan found real CVEs in the originally planned pins. Final pins are `cryptography==50.0.2` (was `46.0.7`) and `pillow==13.0.0` (was `11.3.0`). Verified `adb-shell==0.4.4` + `cryptography==50.0.2` still import.
+- **APK cert verification:** `keytool -printcert -jarfile` fails on these APKs because AGP 8.5.2 with `minSdk 26` produces v2-only-signed APKs (pre-existing behavior). Verify the signer with `apksigner verify --print-certs` instead.
+- **Checksum verification:** `sha256sums.txt` records the basename, so `sha256sum -c` must run from inside the release directory (`launcher/app/build/outputs/apk/release/`), not the repo root.
+
+---
+
 ## File map
 
 - Modify: `tools/requirements.txt` — exact pins.
