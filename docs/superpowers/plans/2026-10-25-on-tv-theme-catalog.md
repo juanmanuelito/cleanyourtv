@@ -77,8 +77,9 @@ Edit `ThemeFiles.java`. Replace the `IMAGE` pattern line and the `path`/`isColle
     /** The names tools/theme.sh accepts for a collection image, and the types WallpaperRotation reads. */
     private static final Pattern IMAGE = Pattern.compile("[A-Za-z0-9_.-]+\\.(jpg|jpeg|png|webp)",
             Pattern.CASE_INSENSITIVE);
-    /** A theme name in the catalog: no slashes, no dots-as-parents, so it can never leave the theme dir. */
-    private static final Pattern THEME_NAME = Pattern.compile("[A-Za-z0-9_.-]+");
+    /** A theme name in the catalog: no slashes, no dots-as-parents (rejects "..", ".", leading/trailing dots),
+        so it can never leave the theme dir. */
+    private static final Pattern THEME_NAME = Pattern.compile("[A-Za-z0-9_-]+(?:\\.[A-Za-z0-9_-]+)*");
 
     private ThemeFiles() {}
 
@@ -107,12 +108,10 @@ Edit `ThemeFiles.java`. Replace the `IMAGE` pattern line and the `path`/`isColle
         return null;
     }
 
-    /** True for "wallpapers" or "themes/<name>/wallpapers" alone: a delete of it clears that collection's images. */
+    /** True for "wallpapers" alone: a delete of it clears the collection's images. (The catalog itself is
+        cleared by the shell `rm -rf themes`, not through the provider's collection delete.) */
     static boolean isCollection(List<String> segments) {
-        if (segments == null) return false;
-        if (segments.size() == 1) return WALLPAPERS.equals(segments.get(0));
-        return segments.size() == 3 && "themes".equals(segments.get(0))
-                && THEME_NAME.matcher(segments.get(1)).matches() && WALLPAPERS.equals(segments.get(2));
+        return segments != null && segments.size() == 1 && WALLPAPERS.equals(segments.get(0));
     }
 ```
 
@@ -304,7 +303,7 @@ Add these methods to `ThemeCatalog.java` (import `java.util.UUID` and reuse the 
      *  refused or the theme has no config.json. Wallpapers are written first, config.json last, so a failed
      *  copy never leaves the new config pointing at a missing picture. */
     static boolean apply(File dir, String name) {
-        if (dir == null || name == null || !name.matches("[A-Za-z0-9_.-]+")) return false;
+        if (dir == null || name == null || !name.matches("[A-Za-z0-9_-]+(?:\\.[A-Za-z0-9_-]+)*")) return false;
         File theme = new File(new File(dir, CATALOG), name);
         if (!new File(theme, Config.FILE_NAME).isFile()) return false;
         File destWallpapers = new File(dir, "wallpapers");
