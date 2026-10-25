@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -48,5 +49,29 @@ public class ThemeFilesTest {
         assertTrue(ThemeFiles.isCollection(Collections.singletonList("wallpapers")));
         assertFalse(ThemeFiles.isCollection(Arrays.asList("wallpapers", "dusk.jpg")));
         assertFalse(ThemeFiles.isCollection(Collections.singletonList("config.json")));
+    }
+
+    @Test public void catalogConfig() {
+        assertEquals("themes/midnight/config.json", ThemeFiles.path(List.of("themes", "midnight", "config.json")));
+    }
+    @Test public void catalogWallpaper() {
+        assertEquals("themes/midnight/wallpaper.jpg", ThemeFiles.path(List.of("themes", "midnight", "wallpaper.jpg")));
+    }
+    @Test public void catalogScreenshot() {
+        assertEquals("themes/midnight/screenshot.jpg", ThemeFiles.path(List.of("themes", "midnight", "screenshot.jpg")));
+    }
+    @Test public void catalogCollectionImage() {
+        assertEquals("themes/midnight/wallpapers/dusk.jpg", ThemeFiles.path(List.of("themes", "midnight", "wallpapers", "dusk.jpg")));
+    }
+    @Test public void catalogCollectionCaptions() {
+        assertEquals("themes/midnight/wallpapers/captions.txt", ThemeFiles.path(List.of("themes", "midnight", "wallpapers", "captions.txt")));
+    }
+    @Test public void catalogRejectsTraversal() {
+        assertNull(ThemeFiles.path(List.of("themes", "..", "config.json")));
+        assertNull(ThemeFiles.path(List.of("themes", "a/b", "config.json")));
+        assertNull(ThemeFiles.path(List.of("themes", "midnight", "evil.exe")));
+    }
+    @Test public void catalogIsCollection() {
+        assertTrue(ThemeFiles.isCollection(List.of("themes", "midnight", "wallpapers")));
     }
 }
