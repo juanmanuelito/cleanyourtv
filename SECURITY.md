@@ -15,9 +15,10 @@ the steps to reproduce it, and what an attacker could do with it.
 
 ## Verifying a release
 
-A built release APK is verified against its checksum: `tools/make-release.sh` builds the APK and
-writes `sha256sums.txt` beside it, so `sha256sum -c` confirms a download is the artifact that came
-out of this repository.
+`tools/make-release.sh` builds the release APK and writes `sha256sums.txt` beside it. To verify a
+downloaded APK, place it next to that file and run, from that same directory:
+
+    sha256sum -c sha256sums.txt
 
 ## What counts
 
