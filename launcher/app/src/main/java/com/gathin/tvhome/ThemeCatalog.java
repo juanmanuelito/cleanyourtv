@@ -38,7 +38,7 @@ final class ThemeCatalog {
      *  refused or the theme has no config.json. Wallpapers are written first, config.json last, so a failed
      *  copy never leaves the new config pointing at a missing picture. */
     static boolean apply(File dir, String name) {
-        if (dir == null || name == null || !name.matches("[A-Za-z0-9_-]+(?:\\.[A-Za-z0-9_-]+)*")) return false;
+        if (dir == null || name == null || !ThemeFiles.THEME_NAME.matcher(name).matches()) return false;
         File theme = new File(new File(dir, CATALOG), name);
         if (!new File(theme, Config.FILE_NAME).isFile()) return false;
         File destWallpapers = new File(dir, "wallpapers");
@@ -55,7 +55,7 @@ final class ThemeCatalog {
             File[] imgs = srcWallpapers.listFiles();
             if (imgs != null) for (File f : imgs) if (f.isFile()) ok &= copy(f, new File(destWallpapers, f.getName()));
         }
-        ok &= copy(new File(theme, Config.FILE_NAME), new File(dir, Config.FILE_NAME));
+        if (ok) ok = copy(new File(theme, Config.FILE_NAME), new File(dir, Config.FILE_NAME));
         if (!ok) return false;
         try (java.io.FileWriter w = new java.io.FileWriter(new File(dir, "theme_revision"))) {
             w.write(UUID.randomUUID().toString());

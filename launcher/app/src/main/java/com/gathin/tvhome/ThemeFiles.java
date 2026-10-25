@@ -11,7 +11,7 @@ final class ThemeFiles {
             Pattern.CASE_INSENSITIVE);
 
     /** A theme name in the catalog: no slashes, no dots-as-parents, so it can never leave the theme dir. */
-    private static final Pattern THEME_NAME = Pattern.compile("[A-Za-z0-9_-]+(?:\\.[A-Za-z0-9_-]+)*");
+    static final Pattern THEME_NAME = Pattern.compile("[A-Za-z0-9_-]+(?:\\.[A-Za-z0-9_-]+)*");
 
     private ThemeFiles() {}
 

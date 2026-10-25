@@ -56,6 +56,17 @@ public class ThemeCatalogTest {
         assertFalse(new File(dir, "wallpapers/a.jpg").exists());
     }
 
+    @Test public void applyReturnsFalseOnCopyFailure() {
+        File dir = new File(System.getProperty("java.io.tmpdir"), "cyt-copyfail-" + System.nanoTime());
+        File theme = new File(dir, "themes/broken");
+        assertTrue(new File(theme, "wallpapers").mkdirs());
+        write(new File(theme, "config.json"), "{}");
+        write(new File(theme, "wallpapers/dusk.jpg"), "img");
+        write(new File(dir, "wallpapers"), "not a directory");
+        assertFalse(ThemeCatalog.apply(dir, "broken"));
+        assertFalse(new File(dir, "config.json").exists());
+    }
+
     private static void write(File f, String s) {
         try (java.io.FileWriter w = new java.io.FileWriter(f)) { w.write(s); }
         catch (java.io.IOException e) { throw new RuntimeException(e); }
