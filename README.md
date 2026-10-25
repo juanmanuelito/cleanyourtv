@@ -473,6 +473,8 @@ tools/theme.sh themes/aurora                                 # push a theme; --r
 | [`tools/screendiff.py`](tools/screendiff.py) | Compares a before and an after screenshot pixel by pixel, leaving out the clock or anything you mask, and writes the pair with your Wi-Fi name blurred. Optional, like the trace tools. [Guide](tools/screendiff.md). |
 | [`tools/race_calendar.py`](tools/race_calendar.py) | Writes this season's F1 calendar into a theme for race-weekend mode, from the free Jolpica API. |
 | [`launcher/build-and-install.sh`](launcher/build-and-install.sh) | Builds a shrunk release (about 517 KB), installs it, switches Home, and rolls back if Home does not land on it. |
+| [`tools/new-keystore.sh`](tools/new-keystore.sh) | Generates this fork's release signing key and `keystore.properties`, once, out of git (see [`docs/SECURITY-SIGNING.md`](docs/SECURITY-SIGNING.md)). |
+| [`tools/make-release.sh`](tools/make-release.sh) | Builds the release APK and writes `sha256sums.txt` beside it, for release verification (see [`SECURITY.md`](SECURITY.md)). |
 
 The scripts never leave the TV without a Home app: they only disable a stock launcher they recognise,
 and skip the Home app in a list until another launcher answers HOME. Details below.
