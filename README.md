@@ -615,6 +615,8 @@ and a wallpaper.
   - **Wallpaper**: one picture from the theme's collection (or its `wallpaper.jpg`), **None**, or **Theme
     default**. A pick holds that picture and stops the rotation until you choose Theme default, press
     Follow theme, or push the theme again.
+  - **Themes**: opens the theme picker with **Built-in** first, then each pushed catalog theme; the row is
+    hidden when no catalog has been pushed.
   - **Animations** on or off, and **Advanced effects** (tile lift, icon zoom and smooth ambient-colour
     transitions; they may use more memory) once animations are on.
   - **Open on start**, only with `open_on_start_choice`: Off, or an app that opens instead of Home the first

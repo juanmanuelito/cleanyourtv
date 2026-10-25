@@ -58,6 +58,10 @@ for FOLDER in "$THEMES_DIR"/*/; do
       esac
     done
   fi
+  if [ -f "$FOLDER/wallpapers/captions.txt" ]; then
+    "$PY" -I b64push.py "$FOLDER/wallpapers/captions.txt" "$(stage "themes/$NAME/wallpapers/captions.txt")" >/dev/null
+    tv "$(put "themes/$NAME/wallpapers/captions.txt")" >/dev/null
+  fi
   echo "pushed $NAME"
 done
 tv "$RESTART; echo done" | tail -n 1
